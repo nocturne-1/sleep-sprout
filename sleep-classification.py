@@ -4,9 +4,9 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-skin_temp = 0 #Placeholder until firebase integration
-body_movement_count = 0 #Placeholder until firebase integration
-sound_count = 0 #Placeholder until firebase integration
+skin_temp = 60 #Placeholder until firebase integration
+body_movement_count = 10 #Placeholder until firebase integration
+sound_count = 4 #Placeholder until firebase integration
 
 
 
