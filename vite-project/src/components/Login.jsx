@@ -22,11 +22,11 @@ const Login = () => {
             if (isLogin) {
                 await signInWithEmailAndPassword(auth, email, password);
                 console.log('Login successful');
-                navigate("/home");
+                navigate("/welcomeli");
             } else {
                 await createUserWithEmailAndPassword(auth, email, password);
                 console.log("Signup successful!");
-                navigate("/home");
+                navigate("/welcome");
             }
         } catch (error) {
             setError(error.message);
