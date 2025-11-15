@@ -1,49 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import cong from "../configuration";
-import { getDatabase, ref, onValue } from "firebase/database";
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './Login';
+import Home from './Home';
+import { auth } from '../configuration';
+import '../App.css'
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 // App.js
 
 function App() {
-  const [data, setData] = useState([]);
+  const [user, loading] = useAuthState(auth);
 
-  useEffect(() => {
-    // Initialize the Firebase database with the provided configuration
-    const database = getDatabase(cong);
-    
-    // Reference to the specific collection in the database
-    const collectionRef = ref(database, "/");
-
-    // Function to fetch data from the database
-    const fetchData = () => {
-      // Listen for changes in the collection
-      onValue(collectionRef, (snapshot) => {
-        const dataItem = snapshot.val();
-
-        // Check if dataItem exists
-        if (dataItem) {
-          // Convert the object values into an array
-          const displayItem = Object.values(dataItem);
-          setData(displayItem);
-        }
-      });
-    };
-
-    // Fetch data when the component mounts
-    fetchData();
-  }, []);
+  if (loading) {
+        return <div>Loading...</div>;
+  }
 
   return (
-    <div>
-      <h1>Data from database:</h1>
-      <ul>
-        {data.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>
-    </div>
-  );
+      <Routes>
+          {/* If user is logged in, redirect to home, otherwise show auth */}
+            <Route 
+              path="/" 
+              element={user ? <Navigate to="/home" /> : <Login />} 
+            />
+                
+          {/* Protected route - only accessible if logged in */}
+            <Route 
+                path="/home" 
+                element={user ? <Home /> : <Navigate to="/" />} 
+              />
+      </Routes>
+    );
+
+
 }
 
 export default App;
