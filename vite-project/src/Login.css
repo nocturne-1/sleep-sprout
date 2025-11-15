@@ -7,14 +7,9 @@
 }
 
 body {
-    background-color: #9bcda1 !important;
+    background-color: #9bcda1;
 }
 
-#li-or-su {
-    font-size: 100px;
-    font-family: 'The-Munday' !important;
-    font-weight: normal;
-}
 #loginLogo {
   display: flex;
   justify-content: center; 
@@ -22,11 +17,12 @@ body {
   width: 450px;
   height: 35vh;  
   margin-bottom: 20px;
-  margin-left: 40px;  
+  margin-left: 40px;
+  padding-bottom: 20px; 
 }
 
-#loginForm {
-    font: 'The-Munday';
+#logotext {
+    font: 'The-Munday' !important;
     font-size: 40px;
     width: 500px;
 }
@@ -39,4 +35,12 @@ body {
 
 #li-su-btn {
     font-family:  Arial, Helvetica, sans-serif;
+}
+
+#last-btn {
+    background-color: rgb(15, 70, 15);
+    border-color: rgb(15, 70, 15);
+    margin-top: 30px;
+    margin-left: 15px;
+    font-size: 40px;
 }

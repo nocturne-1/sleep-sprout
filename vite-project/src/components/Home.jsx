@@ -6,7 +6,8 @@ import { Button, Card, Row, Col, Container } from 'react-bootstrap';
 import { signOut } from 'firebase/auth';
 import {motion} from 'framer-motion';
 import '../Home.css'
-import plantimg from '../assets/plantimg.png';
+import logo from '../assets/logo.png';
+import backgroundimg from '../assets/backgroundimg.png';
 
 function Home() {
     const [data, setData] = useState([]);
@@ -14,7 +15,7 @@ function Home() {
     const [plantImage, setPlantImage] = useState("../assets/plantimg.png");
     const [text, setText] = useState("")
 
-    const sleepScore = 2;
+    const sleepScore = 3;
     useEffect(() => {
 
     const database = getDatabase(cong); 
@@ -54,16 +55,16 @@ function Home() {
 
   useEffect(() => {
     if (sleepScore === 1) {
-        setPlantImage(plantimg);
+        setPlantImage(logo);
         setText("Hi! Your plant is dead.")
     } else if (sleepScore === 2) {
-        setPlantImage(plantimg);
+        setPlantImage(logo);
         setText("Hi! Your plant is dead.")
     } else if (sleepScore === 3) {
-        setPlantImage(plantimg);
-        setText("Hi! Your plant is alive!")
+        setPlantImage(logo);
+        setText("Hi, your plant is sprouting! You have been getting a fairly good amount of rest and quality of rest, w")
     } else {
-        setPlantImage(plantimg)
+        setPlantImage(logo)
         setText("Hi! Your plant is alive!")
     }
     }, [sleepScore]);
@@ -109,7 +110,7 @@ function Home() {
         </Row>
         <Row className="mt-4">
             <Col xs={12}>
-                <Card className="main-image-card">
+                <Card className="main-image-card" id="plant-card">
                     <Card.Img 
                     variant="top" 
                     src={plantImage} 

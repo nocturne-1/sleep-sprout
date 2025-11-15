@@ -44,29 +44,12 @@ function App() {
               
             <Route 
                 path="/home" 
-                element={
-                <ProtectedRoute user={user}>
-                  <Home />
-                </ProtectedRoute>
-                }
+                element={<Home />}
             />
 
             <Route 
               path="/welcome"
-              element={
-              <ProtectedRoute user={user}>
-                <Welcome />
-              </ProtectedRoute>
-              }
-            />
-
-            <Route 
-                path="/welcomeli" 
-                element={
-                <ProtectedRoute user={user}>
-                  <WelcomeLogIn />
-                </ProtectedRoute>
-              }
+              element={<Welcome />}
             />
       </Routes>
     );
