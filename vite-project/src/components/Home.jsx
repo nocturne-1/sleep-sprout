@@ -125,6 +125,12 @@ function Home() {
         <Row className="mt-4">
             <Col xs={12} md={8}>
                 <Card className="main-image-card" id="plant-card">
+                    <Card.Body className="d-flex justify-content-center align-items-center">
+                        <img  
+                        src={plantImage} 
+                        className="plant-image"
+                        />
+                    </Card.Body>
                 </Card>
             </Col>
         </Row> 
