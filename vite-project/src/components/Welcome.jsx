@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {motion} from 'framer-motion';
 import plantimg from '../assets/plantimg.gif';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate, useLocation } from 'react-router-dom'; 
+
 
 const Welcome = () => {
     const navigate = useNavigate(); 
     const [showTypewriter, setShowTypewriter] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
+    const { state } = useLocation();
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -57,7 +59,7 @@ const Welcome = () => {
                     }}
                 >
                     <Typewriter 
-                        text="Hi, I'm Mr. Sprout, your personal sleep plant! Good sleep habits help me grow and bad habits... well, you'll see. After analyzing your sleep, I'll show you how you can keep me (and yourself!) healthy. Click me to see how I analyze it!"
+                        text={`Hi, I'm ${state?.name}, your personal sleep plant! Good sleep habits help me grow and bad habits... well, you'll see. After analyzing your sleep, I'll show you how you can keep me (and yourself!) healthy. Click me to see how I analyze it!`}
                         typingSpeed={30}
                     />
                 </motion.div>

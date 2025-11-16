@@ -48,7 +48,7 @@ body.home-page #root {
 }
 
 #card1 {
-    background: linear-gradient(to bottom, #a8d5a8, #537053); 
+    background: linear-gradient(to bottom, #a8d5a8, #2d5a2d); 
     font-size: 25px;
     color: white; 
     width: 100%;
@@ -67,17 +67,17 @@ body.home-page #root {
 }
 
 #card2 {
-    background-color: rgb(201, 224, 179);
+    background-color: rgb(233, 246, 225);
     border-color: rgba(118, 148, 76, 1);
 }
 
 #card3 {
-    background-color: rgb(201, 224, 179);
+    background-color: rgb(233, 246, 225);
     border-color: rgba(94, 140, 49, 1);
 }
 
 #card4 {
-    background-color: rgb(201, 224, 179);
+    background-color: rgb(233, 246, 225);
     border-color: rgba(50, 100, 18, 1)
 }
 
@@ -89,7 +89,7 @@ body.home-page #root {
 
 #plant-card {
     max-width: 100%;
-    max-height: 500px;
+    max-height: 515px;
     object-fit: contain;
     display: block;
     margin: 0 auto;
@@ -100,7 +100,7 @@ body.home-page #root {
     width: 90%;       
     height: 80%;       
     object-fit: contain;
-    margin-top: -85px;
+    margin-top: -87px;
 }
 
 .content{

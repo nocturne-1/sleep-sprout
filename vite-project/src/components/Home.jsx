@@ -7,6 +7,7 @@ import { signOut } from 'firebase/auth';
 import {motion} from 'framer-motion';
 import '../Home.css';
 import level1 from '../assets/level1.gif';
+import level2 from '../assets/level2.gif';
 import level3 from '../assets/level3.gif';
 import level4 from '../assets/level4.gif';
 import backgroundimg from '../assets/backgroundimg.png';
@@ -17,7 +18,7 @@ function Home() {
     const [plantImage, setPlantImage] = useState("../assets/plantimg.png");
     const [text, setText] = useState("")
 
-    const sleepScore = 3;
+    const sleepScore = 2;
     
     // Add home-page class to body when component mounts
     useEffect(() => {
@@ -47,15 +48,6 @@ function Home() {
     fetchData();
   }, []);
 
-  const onLogout = async () => {
-    try {
-            await signOut(auth);
-            console.log('User logged out successfully');
-        } catch (error) {
-            console.error('Logout error:', error.message);
-    }
-  };
-
   useEffect(() => {
     const timer = setTimeout(() => {
         setShowTypewriter(true);
@@ -67,10 +59,10 @@ function Home() {
   useEffect(() => {
     if (sleepScore === 1) {
         setPlantImage(level1);
-        setText("Hi! Your plant is dead.");
+        setText("Oh no, your plant got struck by lightning! This means you haven't been getting enough good-quality rest to keep yourself healthy. Do better to keep me alive!");
     } else if (sleepScore === 2) {
-        setPlantImage(logo);
-        setText("Hi! Your plant is dead.")
+        setPlantImage(level2);
+        setText("Oh no, your plant got poisoned! This means you haven't been getting enough good-quality rest to keep yourself healthy. Do better to keep me alive!")
     } else if (sleepScore === 3) {
         setPlantImage(level3);
         setText("Your plant is sprouting! You have been getting a fairly good amount of rest and quality of rest, based on your time spent in REM sleep, snores, movement, and overall sleep time. Good job!")
@@ -161,7 +153,8 @@ function Home() {
                         fontSize: '21px',
                         lineHeight: '1.6',
                         textAlign: 'center',
-                        marginTop: '20px'
+                        marginTop: '20px',
+                        marginBottom: '20px'
                     }}
                 >
                     <Typewriter 
@@ -170,10 +163,6 @@ function Home() {
                     />
                 </motion.div>
         )}
-
-        <Row>
-            <Button onClick={onLogout} id="logOutBtn">Logout</Button>
-        </Row>
 
         </div>
     </div>

@@ -1,6 +1,7 @@
 /* Default background image for all pages */
 body {
-  background-image: url('./assets/backgroundimg.png');
+  background-color: #bee0be !important;
+  background-image: url("data:image/svg+xml,%3Csvg width='25' height='25' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2.5' cy='2.5' r='2' fill='%235a8a5a'/%3E%3C/svg%3E") !important;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

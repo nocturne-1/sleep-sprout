@@ -49,3 +49,5 @@ Thumbs.db.env
 .env
 /Users/wenggeiwong/sleep-sprout/sleep-sprout-firebase-adminsdk-fbsvc-227ec67fc1.json
 sleep-sprout-firebase-adminsdk-fbsvc-227ec67fc1.json
+# Local Netlify folder
+.netlify
