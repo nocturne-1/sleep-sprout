@@ -104,8 +104,8 @@ function Home() {
             <Col xs={12} md={4}>
                 <Card id="card4" border="success" className="w-100 h-100">
                     <Card.Body>
-                        <Card.Title>Sleep Score</Card.Title>
-                        <Card.Text>Your sleep score last night was {sleepScore}</Card.Text>
+                        <Card.Title>Snores</Card.Title>
+                        <Card.Text>You snored ___ times last night.</Card.Text>
                     </Card.Body>
                 </Card>
             </Col>
@@ -118,6 +118,14 @@ function Home() {
                         src={plantImage} 
                         className="plant-image"
                         />
+                    </Card.Body>
+                </Card>
+            </Col>
+            <Col xs={12} md={4}>
+                <Card id="card4" border="success" className="w-100 h-100">
+                    <Card.Body>
+                        <Card.Title>Sleep Score</Card.Title>
+                        <Card.Text>Your sleep score last night was {sleepScore}</Card.Text>
                     </Card.Body>
                 </Card>
             </Col>
