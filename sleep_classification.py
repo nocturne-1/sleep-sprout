@@ -54,7 +54,7 @@ def _extract_values_from_data(all_data, key):
     return total_values
 
 # !!!!!!!!!
-def bucket_by_30_mins(records): #heartbeats 
+def bucket_by_30_mins(records):  
     buckets = []
     
     bucket_start = records[0]["timestamp"]
@@ -74,20 +74,17 @@ def bucket_by_30_mins(records): #heartbeats
                 bucket_end = bucket_start + timedelta(minutes=30)
             #current bucket starts with this record
             current_bucket = record
-        #add last bucket
-    
+    #add last bucket
     buckets.append(current_bucket)
+    return buckets #buckets is a list of groups of records (dictionaries) that are measured in during a time interval of 30 mins
 
-    return buckets #buckets is a list of all buckets, a bucket has all timestamps in each 30-min interval
-
-
-# def find_bucket_temp_diff(buckets):
-#     temp_diffs_per_bucket = []
-#     for bucket in buckets:
-#         if(len(bucket)==6):
-#             temp_bucket_diff = 
-#             temp_diffs_per_bucket.append(temp_bucket_diff)
-#     return temp_avgs_per_bucket
+def find_bucket_temp_diff(records):
+    buckets = bucket_by_30_mins(records)
+    temp_diffs_per_bucket = []
+    for bucket in buckets:
+        temp_bucket_diff = buckets
+        temp_diffs_per_bucket.append(temp_bucket_diff)
+    return temp_diffs_per_bucket
 
         
 def extract_total_values(session_key,session_data):
@@ -269,10 +266,16 @@ def calculate_total_duration(session):
 def calculate_total_movements(records): 
     print("calculating total movements")
     total = 0
-    for key,value in records.items():
+    for key,value in records.items(): #.items returns list of tuples of key value pairs
         total += value["numMoved"]
     return total
         
+def calculate_total_snores(records):
+    print("calculating total snores")
+    total = 0
+    for key,value in records.items():
+        total += value["numSnore"]
+    return total
 
 def listen_for_updates(event):
     """Firebase listener callback - triggers when CPXData changes"""
