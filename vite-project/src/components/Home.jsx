@@ -6,7 +6,6 @@ import { Button, Card, Row, Col, Container } from 'react-bootstrap';
 import { signOut } from 'firebase/auth';
 import {motion} from 'framer-motion';
 import '../Home.css';
-import IMG_0140 from '../assets/IMG_0140.jpg';
 import level1 from '../assets/level1.gif';
 import level2 from '../assets/level2.gif';
 import level3 from '../assets/level3.gif';
@@ -16,7 +15,7 @@ import backgroundimg from '../assets/backgroundimg.png';
 function Home() {
     const [data, setData] = useState([]);
     const [showTypewriter, setShowTypewriter] = useState(false);
-    const [plantImage, setPlantImage] = useState(IMG_0140);
+    const [plantImage, setPlantImage] = useState(null);
     const [text, setText] = useState("");
     const [sleepScore, setSleepScore] = useState(null);
     const [duration, setDuration] = useState(null);
