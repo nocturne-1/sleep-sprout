@@ -6,6 +6,10 @@ import requests
 import time
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
+
+
+
 
 # firebase config
 load_dotenv()
@@ -20,7 +24,20 @@ url = 'https://ai.hackclub.com/proxy/v1/chat/completions'
 key = os.getenv('key')
 
 
-ref = db.reference('CPXData') #will change as user functionality changes
+
+# Get data from last tracked session
+parent_ref = db.reference('CPXData')
+sessions = parent_ref.get()
+#sessions is in format session + unix code, following lines find last session
+key_tuples = []
+for key in sessions.keys():
+    epoch_str = key.split('_')[1] #splits into "session" & unix code, only takes unix code
+    epoch_int = int(epoch_str)
+    key_tuples.append((epoch_int,key)) #stores int unix code and key to access later
+
+key_tuples.sort()
+last_session_key = key_tuples[-1][1]
+last_session_data = sessions[last_session_key]
 
 
 def _extract_values_from_data(all_data, key):
@@ -36,62 +53,103 @@ def _extract_values_from_data(all_data, key):
                 total_values.append(doc_data[key])
     return total_values
 
+# !!!!!!!!!
+def bucket_by_30_mins(records): #heartbeats 
+    buckets = []
+    
+    bucket_start = records[0]["timestamp"]
+    bucket_end   = bucket_start + timedelta(minutes=30)
+    current_bucket = []
 
-def extract_total_values():
-    """Extract values, process data, and export results to Firebase"""
-    all_data = ref.get()
+    for record in records:
+        timestamp = record["timestamp"]
+        #checks if item is in current bucket
+        if bucket_start <= timestamp <= bucket_end:
+            current_bucket.append(record)
+        #if not in bucket, save previous bucket and move on
+        else:
+            buckets.append(current_bucket)
+            while timestamp >= bucket_end:
+                bucket_start = bucket_end
+                bucket_end = bucket_start + timedelta(minutes=30)
+            #current bucket starts with this record
+            current_bucket = record
+        #add last bucket
     
-    if not all_data or "ended" not in all_data:
-        print("'ended' field not found. Waiting...")
-        return
+    buckets.append(current_bucket)
+
+    return buckets #buckets is a list of all buckets, a bucket has all timestamps in each 30-min interval
+
+
+# def find_bucket_temp_diff(buckets):
+#     temp_diffs_per_bucket = []
+#     for bucket in buckets:
+#         if(len(bucket)==6):
+#             temp_bucket_diff = 
+#             temp_diffs_per_bucket.append(temp_bucket_diff)
+#     return temp_avgs_per_bucket
+
+        
+def extract_total_values(session_key,session_data):
+    print(session_key,"ice cream")
+    print()
+    print()
+    print()
+    print(session_data,"cake")
+    # """Extract values, process data, and export results to Firebase"""
+    # all_data = ref.get()
     
-    # Extract values
-    all_moved = _extract_values_from_data(all_data, "numMoved")
-    all_temps = _extract_values_from_data(all_data, "temptoGive")
-    all_snores = _extract_values_from_data(all_data, "numSnore")
+    # if not all_data or "ended" not in all_data:
+    #     print("'ended' field not found. Waiting...")
+    #     return
     
-    if not all_moved or not all_temps or not all_snores:
-        print("Missing required data fields. Skipping...")
-        return
+    # # Extract values
+    # all_moved = _extract_values_from_data(all_data, "numMoved")
+    # all_temps = _extract_values_from_data(all_data, "temptoGive")
+    # all_snores = _extract_values_from_data(all_data, "numSnore")
     
-    # Calculate totals and averages
-    total_moves = sum(all_moved)
-    total_snores = sum(all_snores)
-    duration = all_data["ended"] - all_data["started"]
-    hours = duration / 60
-    avg_temp = sum(all_temps) / len(all_temps) if all_temps else 0
+    # if not all_moved or not all_temps or not all_snores:
+    #     print("Missing required data fields. Skipping...")
+    #     return
     
-    # Generate classifications
-    classification_list = [] # every value is 30-min interval
-    for i in range(len(all_temps)):
-        classification = sleep_classification(i, all_temps, all_moved)
-        classification_list.append(classification)
+    # # Calculate totals and averages
+    # total_moves = sum(all_moved)
+    # total_snores = sum(all_snores)
+    # duration = all_data["ended"] - all_data["started"]
+    # hours = duration / 60
+    # avg_temp = sum(all_temps) / len(all_temps) if all_temps else 0
     
-    # Calculate REM sleep time
-    rem_sleep_time = 0
-    for i in classification_list:
-        if i == "REM Sleep":
-            rem_sleep_time += 30
+    # # Generate classifications
+    # classification_list = [] # every value is 30-min interval
+    # for i in range(len(all_temps)):
+    #     classification = sleep_classification(i, all_temps, all_moved)
+    #     classification_list.append(classification)
     
-    # Get grow_decision score
-    grow_decision_score = grow_decision(classification_list, duration)
+    # # Calculate REM sleep time
+    # rem_sleep_time = 0
+    # for i in classification_list:
+    #     if i == "REM Sleep":
+    #         rem_sleep_time += 30
     
-    # Export to Firebase
-    results_ref = ref.child('results')
-    results_ref.set({
-        'grow_decision': grow_decision_score,
-        'total_movement': total_moves,
-        'total_snore': total_snores,
-        'duration': duration,
-        'avg_temp': avg_temp,
-        'rem_sleep_time': rem_sleep_time
-    })
+    # # Get grow_decision score
+    # grow_decision_score = grow_decision(classification_list, duration)
+    
+    # # Export to Firebase
+    # results_ref = ref.child('results')
+    # results_ref.set({
+    #     'grow_decision': grow_decision_score,
+    #     'total_movement': total_moves,
+    #     'total_snore': total_snores,
+    #     'duration': duration,
+    #     'avg_temp': avg_temp,
+    #     'rem_sleep_time': rem_sleep_time
+    # })
     
 
 
 
 #Todo starting temp so that we can see the difference in temp not temp value since it is highly variable per person
-def sleep_classification(time_index, skin_temp, body_movement_count): #skin_temp and body_movement_count are lists  
+def sleep_classification(bucket_index, skin_temp, body_movement_count): #skin_temp and body_movement_count are lists  
     initial_temp = skin_temp[0] 
     body_movement_time_index = body_movement_count[time_index] 
     current_temp = skin_temp[time_index]
@@ -204,30 +262,58 @@ def grow_decision(classifications, duration):
         return 1
 
 
-def listen_for_ended(event):
-    """Firebase listener callback - triggers when data changes"""
-    if event.event_type == 'put':
-        if event.path == '/ended':
-            # "ended" field was added/updated
-            print("'ended' field detected in Firebase. Processing data...")
-            extract_total_values()
-        elif event.path == '':
-            # Entire data was updated - check if "ended" exists
-            all_data = event.data
-            if all_data and isinstance(all_data, dict) and "ended" in all_data:
-                print("'ended' field detected in Firebase. Processing data...")
-                extract_total_values()
+def calculate_total_duration(session): 
+    print("calculating duration of sleep: ")
+    return session['ended'] - session['started'] #CHANGE FOR HOURS LATER!!!!!!!!!
+
+def calculate_total_movements(records): 
+    print("calculating total movements")
+    total = 0
+    for key,value in records.items():
+        total += value["numMoved"]
+    return total
+        
+
+def listen_for_updates(event):
+    """Firebase listener callback - triggers when CPXData changes"""
+    print(f"Firebase event: {event.event_type} at path: {event.path} data: {event.data}")
+    
+    if event.event_type == 'patch' and "ended" in event.data: 
+        print("session has ended, starting to analyze")
+        ref = db.reference(event.path)
+        session_data = ref.get()
+        print("finished downloading session", session_data)
+        print(calculate_total_duration(session_data))
+        print(calculate_total_movements(session_data['records']))
+
+    # if event.event_type == 'put':
+    #     # Get all sessions
+    #     last_data = ref.get()
+
+    #     print("put")
+       
+    #     if children_data and isinstance(children_data, dict):
+    # #     # Process each session
+    #         for session_key, session_data in children_data.items():
+    #             if isinstance(session_data, dict) and "ended" in session_data:
+    #     #             # Check if we've already processed this session
+    #                 if "results" not in session_data:
+    #                     print(f"Processing new completed session: {session_key}")
+    #                     extract_total_values(session_key, session_data)
+    #                 else:
+    #                     print(f"Session {session_key} already processed, skipping...")
 
 
 # Set up Firebase listener
-print("Listening for 'ended' field in Firebase...")
-ref.listen(listen_for_ended)
+print("🔥 Listening for updates to CPXData...")
+ref = db.reference()
+ref.listen(listen_for_updates)
 
 # Keep the script running
 try:
     while True:
         time.sleep(1)
 except KeyboardInterrupt:
-    print("\nStopping listener...")
+    print("\n✋ Stopping listener...")
 
 
