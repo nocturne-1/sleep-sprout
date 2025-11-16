@@ -7,7 +7,7 @@ import time
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
-
+import json
 
 
 # firebase config
@@ -24,19 +24,6 @@ key = os.getenv('key')
 
 
 
-# Get data from last tracked session
-parent_ref = db.reference('CPXData')
-sessions = parent_ref.get()
-#sessions is in format session + unix code, following lines find last session
-key_tuples = []
-for key in sessions.keys():
-    epoch_str = key.split('_')[1] #splits into "session" & unix code, only takes unix code
-    epoch_int = int(epoch_str)
-    key_tuples.append((epoch_int,key)) #stores int unix code and key to access later
-
-key_tuples.sort()
-last_session_key = key_tuples[-1][1]
-last_session_data = sessions[last_session_key]
 
 
 def _extract_values_from_data(all_data, key):
@@ -192,23 +179,67 @@ def sleep_classification(skin_temp, body_movement_count): #skin_temp and body_mo
     how many times body movement is detected (resets after every 30-minute interval): {body_movement_count}
 
 
-    Return a list of length {length} given above, with only ONE of the following answers, "REM Sleep" or "Non-REM Sleep", at each index representing your analysis of whether the data inputted at that index (body temperature and body movement data) was measured during REM or Non-REM Sleep. DO NOT RETURN ANY OTHER TEXT/NUMBERS/VALUES, ONLY THE LIST, AND MAKE SURE EACH INDEX OF OUTPUT CORRESPONDS TO THE INDICES OF THE INPUT GIVEN!
+    Return a list of length {length} given above, only consisting of the following values, "REM Sleep" or "Non-REM Sleep", Your analysis of whether the data inputted at that index (body temperature and body movement data) was measured during REM or Non-REM Sleep. 
+    DO NOT RETURN ANY OTHER TEXT/NUMBERS/VALUES, ONLY THE LIST, AND MAKE SURE EACH INDEX OF OUTPUT CORRESPONDS TO THE INDICES OF THE INPUT GIVEN! 
+    for example, the data at index 0 of skin_temp and index 0 of body_movement_count would be used to predict the REM classification at index 0.
+
+    PLEASE RETURN YOUR RESPONSE IN ARRAY FORMAT!!!!!
     """
             }
 
     ]
     }
     response = requests.post(url, headers=headers, json=data)
-    res_json = response.json()
-    assistant_reply = res_json["choices"][0]["message"]["content"]
-    return assistant_reply.strip()
+    # print(response)
+    # res_json = response.json()
+    # print(res_json)
+    # assistant_reply = res_json["choices"][0]["message"]["content"]
+    # assistant_reply_list = json.loads(assistant_reply.strip())
+    # return assistant_reply_list
 
-def grow_decision(classifications, duration):
-    hours = duration / 60 #CHANGE THIS
-    
+
+    # print("Status:", response.status_code)
+    # print("Raw response:", response.text)
+
+    # If API is not running or returns error page
+    if response.status_code != 200:
+        print("API request failed — non-200 status")
+        return None
+
+    # Try to parse JSON safely
+    try:
+        res_json = response.json()
+    except ValueError:
+        print("API did not return JSON.")
+        print("Raw response:", response.text)
+        return None
+
+    # print("Parsed JSON:", res_json)
+
+    # Validate JSON structure before accessing nested fields
+    try:
+        assistant_reply = res_json["choices"][0]["message"]["content"]
+    except (KeyError, IndexError, TypeError):
+        print("Unexpected JSON structure:", res_json)
+        return None
+
+    # Parse the assistant reply
+    try:
+        assistant_reply_list = json.loads(assistant_reply.strip())
+    except json.JSONDecodeError as e:
+        print("Assistant reply is not valid JSON:", assistant_reply)
+        return None
+
+    return assistant_reply_list
+
+def calculate_duration_score(duration):
+    hours = duration / 30 #demo setup for now so duration in seconds / 30 seconds
     #duration is best if it meets/exceeds 10 hours 
     duration_score = hours / 10
+    return duration_score
 
+def calculate_rem_score(classifications):
+    
 
     # calculating classification score
 
@@ -250,9 +281,9 @@ def grow_decision(classifications, duration):
     assistant_reply = res_json["choices"][0]["message"]["content"]
     classification_score = assistant_reply.strip()
     classification_score = int(classification_score)/4
+    return classification_score
     
-    
-
+def calculate_final_score(duration_score,classification_score):
     final_score = duration_score * 0.4 + classification_score * 0.6 
 
     if final_score >= .75:
@@ -293,6 +324,13 @@ def calculate_avg_temp(records):
     avg = total/count
     return avg
 
+def calculate_rem_duration(classification_list):
+    rem_sleep_time = 0
+    for i in classification_list:
+        if i == "REM Sleep":
+            rem_sleep_time += 30
+    return rem_sleep_time
+
 def listen_for_updates(event):
     """Firebase listener callback - triggers when CPXData changes"""
     print(f"Firebase event: {event.event_type} at path: {event.path} data: {event.data}")
@@ -321,8 +359,34 @@ def listen_for_updates(event):
         movements_per_bucket = find_bucket_movements(session_data['records'])
         print("total movements per bucket",movements_per_bucket)
 
+        rem_list = sleep_classification(temp_diff_per_bucket,movements_per_bucket)
+        print("rem classifications:",rem_list)
 
+        rem_duration = calculate_rem_duration(rem_list)
+        print("approx rem duration: ", rem_duration)
 
+        rem_score = calculate_rem_score(rem_list)
+        print("rem score:",rem_score)
+
+        duration_score = calculate_duration_score(total_duration)
+        print("duration score:",duration_score)
+
+        final_score = calculate_final_score(duration_score,rem_score)
+        print("final score:",final_score)
+
+        #write data into firebase
+        new_ref = ref.push({
+            'duration': total_duration,
+            'total_movements': total_movements,
+            'total_snores': total_snores,
+            'avg_temp': avg_temp,
+            'rem_duration': rem_duration,
+            'rem_score': rem_score,
+            'duration_score': duration_score,
+            'final_score': final_score
+        })
+
+        print(f"New user added with key: {new_ref.key}")
 
 # Set up Firebase listener
 print("🔥 Listening for updates to CPXData...")
