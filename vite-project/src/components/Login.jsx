@@ -16,11 +16,11 @@ const Login = () => {
     };
 
     return (
-        <div style={{ maxWidth: '500px', margin: '50px auto', padding: '20px' }}>
+        <div style={{ maxWidth: '700px', margin: '50px auto', padding: '20px' }}>
             <div id="loginLogo">
                 <img src={logo} alt="Logo image" />
             </div>
-            <div id="logotext" style={{ textAlign: 'center'}}>Sleep Sprout</div>
+            <div id="logotext">Sleep Sprout</div>
             <div style={{ textAlign: 'center' }} id="li-su-btn">
                 <Button 
                     id="last-btn" 

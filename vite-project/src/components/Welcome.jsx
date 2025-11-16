@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {motion} from 'framer-motion';
-import plantimg from '../assets/plantimg.png';
+import plantimg from '../assets/plantimg.gif';
 import { useNavigate } from 'react-router-dom'; 
 
 const Welcome = () => {
@@ -52,12 +52,13 @@ const Welcome = () => {
                         boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
                         fontSize: '21px',
                         lineHeight: '1.6',
-                        textAlign: 'center'
+                        textAlign: 'center',
+                        marginBottom: '100px'
                     }}
                 >
                     <Typewriter 
-                        text="Hi, I'm Mr. Sprout, your personal sleep plant! Good sleep habits help me grow and bad habits... well, you'll see. After analyzing your sleep data, I'll show you where you can improve and how you can keep me (and yourself!) healthy. Click me to see how I analyze it!"
-                        typingSpeed={50}
+                        text="Hi, I'm Mr. Sprout, your personal sleep plant! Good sleep habits help me grow and bad habits... well, you'll see. After analyzing your sleep, I'll show you how you can keep me (and yourself!) healthy. Click me to see how I analyze it!"
+                        typingSpeed={30}
                     />
                 </motion.div>
             )}

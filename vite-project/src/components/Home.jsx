@@ -5,8 +5,10 @@ import { auth } from "../configuration";
 import { Button, Card, Row, Col, Container } from 'react-bootstrap';
 import { signOut } from 'firebase/auth';
 import {motion} from 'framer-motion';
-import '../Home.css'
-import logo from '../assets/logo.png';
+import '../Home.css';
+import level1 from '../assets/level1.gif';
+import level3 from '../assets/level3.gif';
+import level4 from '../assets/level4.gif';
 import backgroundimg from '../assets/backgroundimg.png';
 
 function Home() {
@@ -15,7 +17,7 @@ function Home() {
     const [plantImage, setPlantImage] = useState("../assets/plantimg.png");
     const [text, setText] = useState("")
 
-    const sleepScore = 3;
+    const sleepScore = 4;
     useEffect(() => {
 
     const database = getDatabase(cong); 
@@ -55,17 +57,17 @@ function Home() {
 
   useEffect(() => {
     if (sleepScore === 1) {
-        setPlantImage(logo);
-        setText("Hi! Your plant is dead.")
+        setPlantImage(level1);
+        setText("Hi! Your plant is dead.");
     } else if (sleepScore === 2) {
         setPlantImage(logo);
         setText("Hi! Your plant is dead.")
     } else if (sleepScore === 3) {
-        setPlantImage(logo);
-        setText("Hi, your plant is sprouting! You have been getting a fairly good amount of rest and quality of rest, w")
+        setPlantImage(level3);
+        setText("Your plant is sprouting! You have been getting a fairly good amount of rest and quality of rest, based on your time spent in REM sleep, snores, movement, and overall sleep time. Good job!")
     } else {
-        setPlantImage(logo)
-        setText("Hi! Your plant is alive!")
+        setPlantImage(level4);
+        setText("Your plant is blooming! You have been getting a great amount of rest and quality of rest, based on your time spent in REM sleep, snores, movement, and overall sleep time. Great job!");
     }
     }, [sleepScore]);
 
@@ -109,13 +111,14 @@ function Home() {
             </Col>
         </Row>
         <Row className="mt-4">
-            <Col xs={12}>
+            <Col xs={12} md={8}>
                 <Card className="main-image-card" id="plant-card">
-                    <Card.Img 
-                    variant="top" 
-                    src={plantImage} 
-                    className="plant-image"
-                    />
+                    <Card.Body className="d-flex justify-content-center align-items-center">
+                        <img  
+                        src={plantImage} 
+                        className="plant-image"
+                        />
+                    </Card.Body>
                 </Card>
             </Col>
         </Row> 

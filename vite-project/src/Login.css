@@ -17,24 +17,14 @@ body {
   width: 450px;
   height: 35vh;  
   margin-bottom: 20px;
-  margin-left: 40px;
+  margin-left: 100px;
   padding-bottom: 20px; 
 }
 
 #logotext {
-    font: 'The-Munday' !important;
-    font-size: 40px;
-    width: 500px;
-}
-
-#submitButton {
-    background-color: #572D0C;
-    border-color: #572D0C;
-    margin-top: 20px;
-}
-
-#li-su-btn {
-    font-family:  Arial, Helvetica, sans-serif;
+    font-family: 'The-Munday' !important;
+    font-size: 100px;
+    text-align: center;
 }
 
 #last-btn {
