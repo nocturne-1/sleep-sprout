@@ -74,7 +74,7 @@ function Home() {
     } else if (sleepScore === 3) {
         setPlantImage(level3);
         setText("Your plant is sprouting! You have been getting a fairly good amount of rest and quality of rest, based on your time spent in REM sleep, snores, movement, and overall sleep time. Good job!")
-    } else {
+    } else if (sleepScore === 4) {
         setPlantImage(level4);
         setText("Your plant is blooming! You have been getting a great amount of rest and quality of rest, based on your time spent in REM sleep, snores, movement, and overall sleep time. Great job!");
     }
