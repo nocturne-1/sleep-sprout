@@ -270,7 +270,7 @@ def calculate_rem_duration(classification_list): #CHANGE LATER
     rem_sleep_time = 0
     for i in classification_list:
         if i == "REM Sleep":
-            rem_sleep_time += 15
+            rem_sleep_time += 15 #this is for demo
     return rem_sleep_time
 
 def listen_for_updates(event):
