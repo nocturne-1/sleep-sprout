@@ -1,8 +1,8 @@
-// README <br>
+
 
 Voted top 5 out of 50+ teams!!
 
-About : <br>
+About: 
 
 **Made by: Emma, Vijeta, and Arianna**
 
