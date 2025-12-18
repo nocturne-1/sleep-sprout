@@ -1,6 +1,6 @@
 
 
-Voted top 5 out of 50+ teams!!
+Voted top 5 at Parthenon, the largest all-girls high school hackathon!!
 
 About: 
 
